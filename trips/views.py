@@ -4,6 +4,9 @@ import json
 =======
 from django.http import JsonResponse
 from django.shortcuts import redirect
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 >>>>>>> 726ca96 (refactor: add trip URL namespace and redirect)
 # Create your views here.
@@ -128,4 +131,28 @@ def trip_create_demo(request):
 =======
 def trip_redirect(request):
     return redirect("trips:trip_home")
->>>>>>> 726ca96 (refactor: add trip URL namespace and redirect)
+
+def trip_detail(request,trip_id):
+    return JsonResponse(
+        {
+            "message":"Trip details",
+            "trip_id":trip_id,
+        }
+    )
+
+@method_decorator(csrf_exempt,name="dispatch")
+class TripMethodView(View):
+
+    def get(self,request):
+        return JsonResponse(
+            {
+                "message":"fetching trips..."
+            }
+        )
+
+    def post(self,request):
+        return JsonResponse(
+            {
+                "message":"Creating a trip.."
+            },status = 201
+        )
