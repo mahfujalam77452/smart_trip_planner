@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 <<<<<<< HEAD
 import json
@@ -130,13 +131,27 @@ def trip_create_demo(request):
 
 =======
 def trip_redirect(request):
-    return redirect("trips:trip_home")
+    return redirect("trips:trip_detail",trip_id=15)
 
 def trip_detail(request,trip_id):
     return JsonResponse(
         {
             "message":"Trip details",
             "trip_id":trip_id,
+        }
+    )
+
+def trip_search(request):
+
+    destination = request.GET.get("destination","no-paramiter")
+    max_budget = request.GET.get("max_budget")
+
+
+
+    return JsonResponse(
+        {
+            "destination":destination,
+            "max_budget":max_budget
         }
     )
 
@@ -156,3 +171,44 @@ class TripMethodView(View):
                 "message":"Creating a trip.."
             },status = 201
         )
+@csrf_exempt
+def trip_create_demo(request):
+    
+    if request.method != "POST":
+        return JsonResponse(
+            {
+                "message":"Method not allowed"
+            },
+            status=405
+        )
+
+    try:
+        data = json.loads(request.body)
+    except (json.JSONDecodeError,UnicodeDecodeError):
+        return JsonResponse(
+            {
+                "error":"Invalid json"
+            },
+            status=400
+        )
+
+    destination =data.get("destination").strip()
+    max_budget = data.get("max_budget")
+
+
+    if not destination  or max_budget is None:
+
+        return JsonResponse(
+            {
+                "message":"destination and max-budget required"
+            }
+            ,status=400
+        )
+
+    return JsonResponse(
+        {
+        "message":"Input received successfully",
+        "destination":destination,
+        "budget":max_budget}
+        ,status=201
+    )

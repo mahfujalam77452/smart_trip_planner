@@ -7,5 +7,7 @@ urlpatterns = [
     path("",views.trip_home,name="trip_home"),
     path("home/",views.trip_redirect,name="trip_redirect"),
     path("<int:trip_id>/",views.trip_detail,name="trip_detail"),
-    path("class-method-demo/",views.TripMethodView.as_view(),name="class_method_demo")
+    path("class-method-demo/",views.TripMethodView.as_view(),name="class_method_demo"),
+    path("search/",views.trip_search),
+    path("create_trip",views.trip_create_demo)
 ]
