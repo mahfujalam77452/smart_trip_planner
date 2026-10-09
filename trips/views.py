@@ -1,5 +1,11 @@
 from django.shortcuts import render
+<<<<<<< HEAD
 import json
+=======
+from django.http import JsonResponse
+from django.shortcuts import redirect
+
+>>>>>>> 726ca96 (refactor: add trip URL namespace and redirect)
 # Create your views here.
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -81,6 +87,7 @@ def trip_create_demo(request):
         status=201,
     )
 
+<<<<<<< HEAD
 
 @csrf_exempt
 def trip_create_demo(request):
@@ -118,3 +125,7 @@ def trip_create_demo(request):
     )
 
 
+=======
+def trip_redirect(request):
+    return redirect("trips:trip_home")
+>>>>>>> 726ca96 (refactor: add trip URL namespace and redirect)
