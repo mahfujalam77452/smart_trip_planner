@@ -1,21 +1,13 @@
 import json
 from django.shortcuts import render
-<<<<<<< HEAD
-import json
-=======
+
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
->>>>>>> 726ca96 (refactor: add trip URL namespace and redirect)
-# Create your views here.
-from django.http import JsonResponse
-from django.shortcuts import redirect
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+
 
 def trip_home(request):
     return JsonResponse({
@@ -91,124 +83,3 @@ def trip_create_demo(request):
         status=201,
     )
 
-<<<<<<< HEAD
-
-@csrf_exempt
-def trip_create_demo(request):
-
-    if request.method != "POST":
-        return JsonResponse(
-            {"error": "Method not allowed"},
-            status=405,
-        )
-
-    try:
-        data = json.loads(request.body)
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        return JsonResponse(
-            {"error": "Invalid JSON"},
-            status=400,
-        )
-
-    destination = data.get("destination")
-    budget = data.get("budget")
-
-    if not destination or budget is None:
-        return JsonResponse(
-            {"error": "destination and budget are required"},
-            status=400,
-        )
-
-    return JsonResponse(
-        {
-            "message": "Input received successfully",
-            "destination": destination,
-            "budget": budget,
-        },
-        status=201,
-    )
-
-
-=======
-def trip_redirect(request):
-    return redirect("trips:trip_detail",trip_id=15)
-
-def trip_detail(request,trip_id):
-    return JsonResponse(
-        {
-            "message":"Trip details",
-            "trip_id":trip_id,
-        }
-    )
-
-def trip_search(request):
-
-    destination = request.GET.get("destination","no-paramiter")
-    max_budget = request.GET.get("max_budget")
-
-
-
-    return JsonResponse(
-        {
-            "destination":destination,
-            "max_budget":max_budget
-        }
-    )
-
-@method_decorator(csrf_exempt,name="dispatch")
-class TripMethodView(View):
-
-    def get(self,request):
-        return JsonResponse(
-            {
-                "message":"fetching trips..."
-            }
-        )
-
-    def post(self,request):
-        return JsonResponse(
-            {
-                "message":"Creating a trip.."
-            },status = 201
-        )
-@csrf_exempt
-def trip_create_demo(request):
-    
-    if request.method != "POST":
-        return JsonResponse(
-            {
-                "message":"Method not allowed"
-            },
-            status=405
-        )
-
-    try:
-        data = json.loads(request.body)
-    except (json.JSONDecodeError,UnicodeDecodeError):
-        return JsonResponse(
-            {
-                "error":"Invalid json"
-            },
-            status=400
-        )
-
-    destination =data.get("destination").strip()
-    max_budget = data.get("max_budget")
-
-
-    if not destination  or max_budget is None:
-
-        return JsonResponse(
-            {
-                "message":"destination and max-budget required"
-            }
-            ,status=400
-        )
-
-    return JsonResponse(
-        {
-        "message":"Input received successfully",
-        "destination":destination,
-        "budget":max_budget}
-        ,status=201
-    )
