@@ -35,7 +35,13 @@ class Trip(models.Model):
     status = models.CharField(
         max_length=10,
         choices=Status.choices,
-        default=Status.PLANNED
+        default=Status.PLANNED,
+        db_index=True
+    )
+
+    notes = models.CharField(
+        max_length = 100,
+        null=True
     )
 
     class Meta:
@@ -100,3 +106,78 @@ class Trip(models.Model):
             raise ValidationError(errors)
     def __str__(self):
         return f"{self.destination} - {self.start_date}"
+
+
+class Traveler(models.Model):
+
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+
+    trips = models.ManyToManyField(
+        Trip,
+        through="TripMembership",
+        related_name="travelers",
+        blank=True,
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class TripMembership(models.Model):
+
+    trip = models.ForeignKey(
+        Trip,
+        on_delete=models.CASCADE,
+        related_name="memberships"
+    )
+
+
+    traveler = models.ForeignKey(
+        Traveler,
+        on_delete=models.CASCADE,
+        related_name="memberships"
+    )
+
+    joined_at = models.DateTimeField(auto_now_add = True)
+
+    class Meta:
+
+        constraints = [
+            models.UniqueConstraint(
+                fields = ["trip","traveler"],
+                name="unique_trip_traveler",
+            )
+        ]
+    def __str__(self):
+        return f"{self.traveler} - {self.trip}"
+
+class Expense(models.Model):
+    trip = models.ForeignKey(
+        Trip,
+        on_delete=models.CASCADE,
+        related_name="expense_items"
+    )
+
+    description = models.CharField(max_length=200)
+
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(amount__gt=0),
+                name="expense_amount_positive"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.description} - {self.amount}"
+
